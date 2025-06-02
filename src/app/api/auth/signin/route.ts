@@ -28,13 +28,13 @@ export async function POST(request: NextRequest) {
       }
     });
 
-    // Set session cookie with mobile Safari compatible settings
+    // Set session cookie with improved settings
     const isProduction = process.env.NODE_ENV === 'production';
     response.cookies.set('session', sessionCookie, {
       maxAge: expiresIn,
       httpOnly: true,
       secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax', // Use 'none' for production to allow cross-origin
+      sameSite: isProduction ? 'lax' : 'lax', // Changed from 'none' to 'lax' for better compatibility
       path: '/',
     });
 
