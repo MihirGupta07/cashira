@@ -1,0 +1,15 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Only authenticated users can access data
+    match /users/{userId} {
+      // Allow the user to read and write to their own data only
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+      
+      // Allow access to user's transactions
+      match /transactions/{transactionId} {
+        allow read, write: if request.auth != null && request.auth.uid == userId;
+      }
+    }
+  }
+} 

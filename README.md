@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Cashira - Money Tracking PWA
+
+Cashira is a Progressive Web App (PWA) for tracking personal finances built with Next.js, Tailwind CSS, and Firebase.
+
+## Features
+
+- **Google Authentication**: Secure sign in with Google
+- **Transaction Management**: Add, edit, and delete income and expense transactions
+- **Dashboard**: Visualize your financial data with charts
+- **Responsive Design**: Works on mobile and desktop
+- **Offline Support**: Works offline with data sync when back online
+- **Dark Mode**: System-based and manual dark mode toggle
+- **PWA Support**: Installable on mobile and desktop devices
+
+## Tech Stack
+
+- **Frontend**: Next.js 14 App Router + Tailwind CSS
+- **Authentication**: Firebase Auth
+- **Database**: Firestore
+- **Charts**: Chart.js with react-chartjs-2
+- **PWA**: next-pwa
+- **Theme**: next-themes for dark mode
+- **Icons**: Heroicons
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+
+- npm or yarn
+- Firebase account
+
+### Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/cashira.git
+cd cashira
+```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Create a `.env.local` file in the root directory with your Firebase credentials:
+```
+NEXT_PUBLIC_FIREBASE_API_KEY=your-api-key
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your-project.firebaseapp.com
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=your-project-id
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your-project.appspot.com
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your-sender-id
+NEXT_PUBLIC_FIREBASE_APP_ID=your-app-id
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=your-measurement-id
+```
+
+4. Run the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Firebase Setup
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Create a new Firebase project
+2. Enable Authentication with Google provider
+3. Create a Firestore database
+4. Deploy the security rules from `firebase.rules`
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+The app is ready to be deployed on Vercel or Netlify:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/cashira)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This project is licensed under the MIT License.

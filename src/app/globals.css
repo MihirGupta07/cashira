@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --safe-top: env(safe-area-inset-top);
+  --safe-bottom: env(safe-area-inset-bottom);
+  --safe-left: env(safe-area-inset-left);
+  --safe-right: env(safe-area-inset-right);
 }
 
 @theme inline {
@@ -19,8 +23,69 @@
   }
 }
 
+html, body {
+  overscroll-behavior-y: none;
+  position: fixed;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  padding-top: var(--safe-top);
+  padding-bottom: var(--safe-bottom);
+  padding-left: var(--safe-left);
+  padding-right: var(--safe-right);
+}
+
+/* Mobile-optimized scrollable areas */
+.scrollable {
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+/* Prevent pull-to-refresh */
+body {
+  overscroll-behavior-y: contain;
+}
+
+/* Mobile-friendly buttons */
+button, 
+a.button,
+[role="button"] {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Hide desktop elements */
+@media (max-width: 640px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+/* PWA splash screen */
+.splash-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--background);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
 }
