@@ -1,16 +1,33 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import { signInWithPopup, signInWithRedirect, getRedirectResult } from 'firebase/auth';
-import { useRouter } from 'next/navigation';
-import { auth, googleProvider } from '../firebase';
-import { authApi, User } from '../auth-api-client';
+import { useState, useEffect, useCallback } from "react";
+import {
+  signInWithPopup,
+  signInWithRedirect,
+  getRedirectResult,
+} from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { auth, googleProvider } from "../firebase";
+import { authApi, User } from "../auth-api-client";
 
-// Helper function to detect mobile Safari
-const isMobileSafari = () => {
-  if (typeof window === 'undefined') return false;
+// Improved mobile detection function
+const isMobileDevice = () => {
+  if (typeof window === "undefined") return false;
+
   const ua = window.navigator.userAgent;
-  return /iPad|iPhone|iPod/.test(ua) && /Safari/.test(ua) && !/Chrome|CriOS|FxiOS/.test(ua);
+
+  // Check for mobile devices
+  const isMobile =
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
+
+  // Check for small screen size as additional indicator
+  const isSmallScreen = window.innerWidth <= 768;
+
+  // Check for touch capability
+  const isTouchDevice =
+    "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+  return isMobile || (isSmallScreen && isTouchDevice);
 };
 
 export function useAuthApi() {
@@ -22,13 +39,14 @@ export function useAuthApi() {
   useEffect(() => {
     const checkSessionAndRedirect = async () => {
       try {
-        // First check for redirect result (mobile Safari)
+        // First check for redirect result
         const redirectResult = await getRedirectResult(auth);
         if (redirectResult) {
+          console.log("Handling redirect result for mobile");
           const idToken = await redirectResult.user.getIdToken();
           const apiUser = await authApi.signInWithGoogle(idToken);
           setUser(apiUser);
-          router.push('/dashboard');
+          router.push("/dashboard");
           return;
         }
 
@@ -36,7 +54,7 @@ export function useAuthApi() {
         const currentUser = await authApi.getCurrentUser();
         setUser(currentUser);
       } catch (error) {
-        console.error('Error checking session:', error);
+        console.error("Error checking session:", error);
         setUser(null);
       } finally {
         setLoading(false);
@@ -50,48 +68,51 @@ export function useAuthApi() {
   const signInWithGoogle = useCallback(async () => {
     try {
       setLoading(true);
-      
-      // Use redirect for mobile Safari, popup for others
-      if (isMobileSafari()) {
-        await signInWithRedirect(auth, googleProvider);
-        // The result will be handled by the useEffect on page reload
-        return;
-      } else {
-        // Desktop and other mobile browsers - use popup
-        const result = await signInWithPopup(auth, googleProvider);
-        const idToken = await result.user.getIdToken();
-        
-        // Send the ID token to our API
-        const apiUser = await authApi.signInWithGoogle(idToken);
-        setUser(apiUser);
-        
-        router.push('/dashboard');
-        return apiUser;
-      }
+
+      const isMobile = isMobileDevice();
+      console.log("Is mobile device:", isMobile);
+
+      // Use redirect for all mobile devices, popup for desktop
+      console.log("Using popup for desktop");
+      // Desktop - use popup
+      const result = await signInWithPopup(auth, googleProvider);
+      const idToken = await result.user.getIdToken();
+
+      // Send the ID token to our API
+      const apiUser = await authApi.signInWithGoogle(idToken);
+      setUser(apiUser);
+
+      router.push("/dashboard");
+      return apiUser;
     } catch (error: unknown) {
-      console.error('Error signing in with Google', error);
-      
-      // If popup fails on mobile, try redirect as fallback
-      if (error && typeof error === 'object' && 'code' in error) {
+      console.error("Error signing in with Google", error);
+
+      // If popup fails, try redirect as fallback
+      if (error && typeof error === "object" && "code" in error) {
         const firebaseError = error as { code: string };
-        if (firebaseError.code === 'auth/popup-blocked' || firebaseError.code === 'auth/cancelled-popup-request') {
+        if (
+          firebaseError.code === "auth/popup-blocked" ||
+          firebaseError.code === "auth/cancelled-popup-request" ||
+          firebaseError.code === "auth/popup-closed-by-user"
+        ) {
+          console.log("Popup failed, trying redirect fallback");
           try {
             await signInWithRedirect(auth, googleProvider);
             return;
           } catch (redirectError) {
-            console.error('Redirect fallback failed:', redirectError);
+            console.error("Redirect fallback failed:", redirectError);
             throw redirectError;
           }
         }
       }
-      
+
       throw error;
     } finally {
-      if (!isMobileSafari()) {
+      // Don't set loading to false for mobile devices using redirect
+      if (!isMobileDevice()) {
         setLoading(false);
       }
-      // Don't set loading to false for mobile Safari redirect, 
-      // as the page will reload and useEffect will handle it
+      // For mobile, loading will be set to false in the useEffect after redirect
     }
   }, [router]);
 
@@ -100,9 +121,9 @@ export function useAuthApi() {
     try {
       await authApi.signOut();
       setUser(null);
-      router.push('/login');
+      router.push("/login");
     } catch (error) {
-      console.error('Error signing out', error);
+      console.error("Error signing out", error);
       throw error;
     }
   }, [router]);
@@ -114,4 +135,4 @@ export function useAuthApi() {
     signOut,
     isAuthenticated: !!user,
   };
-} 
+}

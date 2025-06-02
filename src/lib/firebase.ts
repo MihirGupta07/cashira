@@ -29,6 +29,12 @@ if (getApps().length === 0) {
 
 // Google Auth Provider
 const googleProvider = new GoogleAuthProvider();
-googleProvider.setCustomParameters({ prompt: 'select_account' });
+googleProvider.setCustomParameters({ 
+  prompt: 'select_account'
+});
+
+// Add additional scopes if needed
+googleProvider.addScope('email');
+googleProvider.addScope('profile');
 
 export { app, auth, db, googleProvider }; 
