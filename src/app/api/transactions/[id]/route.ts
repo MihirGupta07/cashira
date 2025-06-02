@@ -16,7 +16,7 @@ interface TransactionUpdateData {
 // GET a single transaction
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = await getAuthenticatedUser();
   
@@ -24,7 +24,7 @@ export async function GET(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
-  const transactionId = params.id;
+  const { id: transactionId } = await params;
   
   try {
     const docRef = adminDb
@@ -58,7 +58,7 @@ export async function GET(
 // PUT/UPDATE a transaction
 export async function PUT(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = await getAuthenticatedUser();
   
@@ -66,7 +66,7 @@ export async function PUT(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
-  const transactionId = params.id;
+  const { id: transactionId } = await params;
   
   try {
     const body = await req.json();
@@ -118,7 +118,7 @@ export async function PUT(
 // DELETE a transaction
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   const user = await getAuthenticatedUser();
   
@@ -126,7 +126,7 @@ export async function DELETE(
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
   
-  const transactionId = params.id;
+  const { id: transactionId } = await params;
   
   try {
     const docRef = adminDb
