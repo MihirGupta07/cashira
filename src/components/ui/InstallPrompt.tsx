@@ -70,8 +70,9 @@ export function InstallPrompt() {
     localStorage.setItem('pwa-install-dismissed', Date.now().toString());
   };
   
+  console.log('showBanner', showBanner);
   // Don't show anything if there's no install prompt and it's not iOS
-  if (!showBanner && !isIOSDevice) {
+  if (!showBanner) {
     return null;
   }
   
