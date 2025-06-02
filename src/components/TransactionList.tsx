@@ -98,7 +98,7 @@ const TransactionList = forwardRef<TransactionListRef>(function TransactionList(
             
             <button
               onClick={() => router.push(`/transactions/${transaction.id}/edit`)}
-              className="text-blue-600 hover:text-blue-800"
+              className="text-primary-600 hover:text-primary-800"
             >
               Edit
             </button>

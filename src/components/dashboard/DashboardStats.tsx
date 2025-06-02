@@ -117,8 +117,8 @@ export const DashboardStats = forwardRef<DashboardStatsRef>(function DashboardSt
       {/* Balance Stat */}
       <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow">
         <div className="flex items-center">
-          <div className="p-3 rounded-full bg-blue-100 dark:bg-blue-900/20 mr-4">
-            <BanknotesIcon className="h-6 w-6 text-blue-600 dark:text-blue-400" />
+          <div className="p-3 rounded-full bg-primary-100 dark:bg-primary-900/20 mr-4">
+            <BanknotesIcon className="h-6 w-6 text-primary-600 dark:text-primary-400" />
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Balance</p>

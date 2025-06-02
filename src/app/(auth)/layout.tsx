@@ -2,7 +2,6 @@
 
 import { ReactNode } from 'react';
 import { AuthProvider } from '@/lib/AuthContext';
-import { ThemeProvider } from 'next-themes';
 
 export default function AuthLayout({
   children,
@@ -10,12 +9,10 @@ export default function AuthLayout({
   children: ReactNode;
 }) {
   return (
-    <ThemeProvider attribute="class">
-      <AuthProvider>
-        <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
-          {children}
-        </div>
-      </AuthProvider>
-    </ThemeProvider>
+    <AuthProvider>
+      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+        {children}
+      </div>
+    </AuthProvider>
   );
 } 

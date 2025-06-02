@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from '@/lib/AuthContext';
 import { ThemeProvider } from 'next-themes';
+import { ThemeMetaTags } from '@/components/ui/ThemeMetaTags';
 
 const inter = Inter({
   subsets: ["latin"],
@@ -13,10 +14,8 @@ export const metadata: Metadata = {
   title: "Cashira - Money Tracker",
   description: "Track your money, seamlessly",
   manifest: "/manifest.json",
-  themeColor: "#2563eb",
   appleWebApp: {
     capable: true,
-    statusBarStyle: "default",
     title: "Cashira",
     startupImage: [
       { url: "/icons/apple-splash-2048-2732.png", media: "(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" },
@@ -42,10 +41,9 @@ export const metadata: Metadata = {
     "apple-mobile-web-app-capable": "yes",
     "application-name": "Cashira",
     "apple-mobile-web-app-title": "Cashira",
-    "apple-mobile-web-app-status-bar-style": "default",
-    "msapplication-navbutton-color": "#2563eb",
+    "msapplication-navbutton-color": "#8b45ff",
     "msapplication-starturl": "/",
-    "msapplication-TileColor": "#2563eb",
+    "msapplication-TileColor": "#8b45ff",
   }
 };
 
@@ -56,8 +54,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} antialiased`}>
-        <ThemeProvider attribute="class">
+      <body className={`${inter.variable} antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100`}>
+        <ThemeProvider 
+          attribute="class" 
+          defaultTheme="system" 
+          enableSystem={true}
+          disableTransitionOnChange={false}
+        >
+          <ThemeMetaTags />
           <AuthProvider>
             {children}
           </AuthProvider>

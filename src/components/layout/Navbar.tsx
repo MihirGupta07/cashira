@@ -27,11 +27,11 @@ export function Navbar() {
   
   return (
     <nav className="bg-white dark:bg-gray-800 border-b dark:border-gray-700">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <Link href="/dashboard" className="text-xl font-bold text-blue-600 dark:text-blue-400">
+              <Link href="/dashboard" className="text-xl font-bold text-primary-600 dark:text-primary-400">
                 Cashira
               </Link>
             </div>
@@ -48,7 +48,7 @@ export function Navbar() {
                     href={link.href}
                     className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
                       isActive 
-                        ? 'border-blue-500 text-gray-900 dark:text-white' 
+                        ? 'border-primary-500 text-gray-900 dark:text-white' 
                         : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
                     }`}
                   >
@@ -105,7 +105,7 @@ export function Navbar() {
                   href={link.href}
                   className={`flex items-center px-3 py-2 text-base font-medium ${
                     isActive 
-                      ? 'bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 text-blue-700 dark:text-blue-400' 
+                      ? 'bg-primary-50 dark:bg-primary-900/20 border-l-4 border-primary-500 text-primary-700 dark:text-primary-400' 
                       : 'border-l-4 border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/30'
                   }`}
                 >

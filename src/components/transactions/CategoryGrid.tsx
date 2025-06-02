@@ -22,7 +22,7 @@ export function CategoryGrid({
           onClick={() => onSelectCategory(category.id)}
           className={`flex flex-col items-center justify-center p-3 rounded-lg border ${
             selectedCategoryId === category.id
-              ? 'bg-blue-50 dark:bg-blue-900/20 border-blue-400 dark:border-blue-700'
+              ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-400 dark:border-primary-700'
               : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
           }`}
         >

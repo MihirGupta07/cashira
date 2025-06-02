@@ -40,8 +40,8 @@ export function ChartSwitcher() {
   const renderChart = () => {
     if (loading) {
       return (
-        <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="flex justify-center items-center py-8">
+          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-500"></div>
         </div>
       );
     }
@@ -81,7 +81,7 @@ export function ChartSwitcher() {
           onClick={() => setTimeframe('daily')}
           className={`px-4 py-2 text-sm font-medium rounded-md ${
             timeframe === 'daily'
-              ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+              ? 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
               : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
           }`}
         >
@@ -91,7 +91,7 @@ export function ChartSwitcher() {
           onClick={() => setTimeframe('weekly')}
           className={`px-4 py-2 text-sm font-medium rounded-md ${
             timeframe === 'weekly'
-              ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+              ? 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
               : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
           }`}
         >
@@ -101,7 +101,7 @@ export function ChartSwitcher() {
           onClick={() => setTimeframe('monthly')}
           className={`px-4 py-2 text-sm font-medium rounded-md ${
             timeframe === 'monthly'
-              ? 'bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-300'
+              ? 'bg-primary-100 dark:bg-primary-900 text-primary-700 dark:text-primary-300'
               : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
           }`}
         >

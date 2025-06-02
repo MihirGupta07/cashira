@@ -27,7 +27,7 @@ export default function TransactionsPage() {
         <h1 className="text-2xl font-bold">Transactions</h1>
         <button 
           onClick={toggleForm}
-          className="flex items-center gap-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-md"
+          className="flex items-center gap-1 bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-md"
         >
           {showForm ? (
             <>
