@@ -31,6 +31,7 @@ export const authApi = {
     }
     
     const data = await response.json();
+    console.log('Sign in response:', data);
     return data.user;
   },
   

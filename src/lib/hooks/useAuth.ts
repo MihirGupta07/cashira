@@ -31,6 +31,7 @@ export function useAuth() {
     try {
       setLoading(true);
       const result = await signInWithPopup(auth, googleProvider);
+      console.log('Sign in result-useAuth:', result);
       router.push('/dashboard');
       return result.user;
     } catch (error) {
