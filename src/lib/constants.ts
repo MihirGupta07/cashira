@@ -1,5 +1,60 @@
 // Centralized constants for the Cashira application
 
+import { Category } from '@/types';
+
+// Category Emoji
+export const CATEGORY_EMOJI: { [key: string]: string } = {
+    food: '🍔',
+    groceries: '🛒',
+    transport: '🚗',
+    rent: '🏠',
+    utilities: '💡',
+    salary: '💰',
+    travel: '✈️',
+    investments: '📈',
+    savings: '💵',
+    shopping: '🛍️',
+    subscriptions: '📦',
+    health: '💊',
+    gifts: '🎁',
+    personalCare: '🧼',
+    internet: '🌐',
+    diningOut: '🍽️',
+    fitness: '🏋️',
+    loans: '🏦',
+    emergency: '🚨',
+    entertainment: '🎬',
+    other: '❓',
+    
+  };
+
+export const DEFAULT_CATEGORIES: Category[] = [
+    { id: 'food', name: 'Food', icon: '🍔' },
+    { id: 'groceries', name: 'Groceries', icon: '🛒' },
+    { id: 'transport', name: 'Transport', icon: '🚗' },
+    { id: 'rent', name: 'Rent', icon: '🏠' },
+    { id: 'utilities', name: 'Utilities', icon: '💡' },
+    { id: 'salary', name: 'Salary', icon: '💰' },
+    { id: 'travel', name: 'Travel', icon: '✈️' },
+    { id: 'investments', name: 'Investments', icon: '📈' },
+    { id: 'savings', name: 'Savings', icon: '💵' },
+    { id: 'shopping', name: 'Shopping', icon: '🛍️' },
+    { id: 'subscriptions', name: 'Subscriptions', icon: '📦' },
+    { id: 'health', name: 'Health', icon: '💊' },
+    { id: 'gifts', name: 'Gifts', icon: '🎁' },
+    { id: 'personalCare', name: 'Personal Care', icon: '🧼' },
+    { id: 'internet', name: 'Internet', icon: '🌐' },
+    { id: 'diningOut', name: 'Dining Out', icon: '🍽️' },
+    { id: 'fitness', name: 'Fitness', icon: '🏋️' },
+    { id: 'loans', name: 'Loans', icon: '🏦' },
+    { id: 'emergency', name: 'Emergency', icon: '🚨' },
+    { id: 'entertainment', name: 'Entertainment', icon: '🎬' },
+    { id: 'education', name: 'Education', icon: '📚' },
+    { id: 'bills', name: 'Bills', icon: '📄' },
+    { id: 'home', name: 'Home', icon: '🏠' },
+    { id: 'other', name: 'Other', icon: '❓' }
+  ];
+
 // Currency Constants
 export const CURRENCIES = {
   USD: { code: 'USD', symbol: '$', name: 'US Dollar' },

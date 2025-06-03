@@ -7,22 +7,8 @@ import { Transaction } from '@/lib/api-client';
 import { useTheme } from '@/lib/ThemeContext';
 import { useCurrency } from '@/lib/CurrencyContext';
 import { TransactionDetailModal } from './TransactionDetailModal';
+import { CATEGORY_EMOJI } from '@/lib/constants';
 
-// Default category emoji mapping
-const CATEGORY_EMOJI: { [key: string]: string } = {
-  food: '🍔',
-  transport: '🚗',
-  shopping: '🛍️',
-  entertainment: '🎬',
-  health: '💊',
-  education: '📚',
-  bills: '📄',
-  home: '🏠',
-  salary: '💰',
-  gifts: '🎁',
-  savings: '💵',
-  other: '❓'
-};
 
 type TransactionItemProps = {
   transaction: Transaction;

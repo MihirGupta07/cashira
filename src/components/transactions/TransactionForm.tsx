@@ -5,27 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/lib/AuthContext';
 import { useTheme } from '@/lib/ThemeContext';
 import { transactionApi } from '@/lib/api-client';
-import {  Category } from '@/types';
 import { CategoryGrid } from './CategoryGrid';
 import { PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
 import { useTransactions } from '@/lib/TransactionContext';
-import { TransactionType } from '@/lib/constants';
+import { DEFAULT_CATEGORIES, TransactionType } from '@/lib/constants';
 
-// Default categories with emojis
-const DEFAULT_CATEGORIES: Category[] = [
-  { id: 'food', name: 'Food', icon: '🍔' },
-  { id: 'transport', name: 'Transport', icon: '🚗' },
-  { id: 'shopping', name: 'Shopping', icon: '🛍️' },
-  { id: 'entertainment', name: 'Entertainment', icon: '🎬' },
-  { id: 'health', name: 'Health', icon: '💊' },
-  { id: 'education', name: 'Education', icon: '📚' },
-  { id: 'bills', name: 'Bills', icon: '📄' },
-  { id: 'home', name: 'Home', icon: '🏠' },
-  { id: 'salary', name: 'Salary', icon: '💰' },
-  { id: 'gifts', name: 'Gifts', icon: '🎁' },
-  { id: 'savings', name: 'Savings', icon: '💵' },
-  { id: 'other', name: 'Other', icon: '❓' }
-];
 
 type TransactionFormProps = {
   onSuccess?: () => void;
@@ -162,19 +146,6 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           </button>
         </div>
       </div>
-      
-      {/* Category */}
-      <div>
-        <label className={`block text-sm font-medium ${colors.semanticColors.text.secondary} mb-2`}>
-          Category
-        </label>
-        <CategoryGrid 
-          categories={DEFAULT_CATEGORIES} 
-          selectedCategoryId={category} 
-          onSelectCategory={(id) => setCategory(id)} 
-        />
-      </div>
-      
       {/* Date */}
       <div>
         <label htmlFor="date" className={`block text-sm font-medium ${colors.semanticColors.text.secondary}`}>
@@ -209,6 +180,19 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           />
         </div>
       </div>
+      {/* Category */}
+      <div>
+        <label className={`block text-sm font-medium ${colors.semanticColors.text.secondary} mb-2`}>
+          Category
+        </label>
+        <CategoryGrid 
+          categories={DEFAULT_CATEGORIES} 
+          selectedCategoryId={category} 
+          onSelectCategory={(id) => setCategory(id)} 
+        />
+      </div>
+      
+      
       
       {/* Actions */}
       <div className="flex space-x-3">
