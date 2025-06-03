@@ -5,6 +5,7 @@ import { AuthProvider } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { CurrencyProvider } from '@/lib/CurrencyContext';
 import { DisableZoom } from '@/lib/DisableZoom';
+import { IOSInputFix } from '@/components/ui/IOSInputFix';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -70,6 +71,7 @@ export default function RootLayout({
           <AuthProvider>
             <CurrencyProvider>
               <DisableZoom />
+              <IOSInputFix />
               {children}
             </CurrencyProvider>
           </AuthProvider>
