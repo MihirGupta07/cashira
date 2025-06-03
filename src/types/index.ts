@@ -1,6 +1,5 @@
 import { Timestamp } from 'firebase/firestore';
-
-export type TransactionType = 'income' | 'expense';
+import { TransactionType } from '../lib/constants';
 
 export type Category = {
   id: string;
@@ -20,8 +19,6 @@ export type Transaction = {
 };
 
 // Chart data types
-export type ChartTimeframe = 'daily' | 'weekly' | 'monthly';
-
 export type ChartData = {
   labels: string[];
   datasets: {

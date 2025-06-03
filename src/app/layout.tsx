@@ -3,6 +3,7 @@ import { Outfit } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
+import { CurrencyProvider } from '@/lib/CurrencyContext';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -62,7 +63,9 @@ export default function RootLayout({
       <body className={`${outfit.variable} antialiased`}>
         <ThemeProvider>
           <AuthProvider>
-            {children}
+            <CurrencyProvider>
+              {children}
+            </CurrencyProvider>
           </AuthProvider>
         </ThemeProvider>
       </body>

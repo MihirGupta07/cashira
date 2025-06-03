@@ -5,6 +5,7 @@ import { Navbar } from '@/components/layout/Navbar';
 import { AuthProvider } from '@/lib/AuthContext';
 import { ProtectedRoute } from '@/components/auth/ProtectedRoute';
 import { useTheme } from '@/lib/ThemeContext';
+import { TransactionProvider } from '@/lib/TransactionContext';
 
 function ProtectedLayoutContent({ children }: { children: ReactNode }) {
   const { colors } = useTheme();
@@ -20,14 +21,16 @@ function ProtectedLayoutContent({ children }: { children: ReactNode }) {
 export default function ProtectedLayout({
   children,
 }: {
-  children: ReactNode;
+  children: React.ReactNode;
 }) {
   return (
     <AuthProvider>
       <ProtectedRoute>
-        <ProtectedLayoutContent>
-          {children}
-        </ProtectedLayoutContent>
+        <TransactionProvider>
+          <ProtectedLayoutContent>
+            {children}
+          </ProtectedLayoutContent>
+        </TransactionProvider>
       </ProtectedRoute>
     </AuthProvider>
   );

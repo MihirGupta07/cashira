@@ -8,6 +8,7 @@ import { transactionApi } from '@/lib/api-client';
 import { TransactionType, Category } from '@/types';
 import { CategoryGrid } from './CategoryGrid';
 import { PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
+import { useTransactions } from '@/lib/TransactionContext';
 
 // Default categories with emojis
 const DEFAULT_CATEGORIES: Category[] = [
@@ -34,6 +35,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
   const router = useRouter();
   const { user } = useAuthContext();
   const { colors } = useTheme();
+  const { refreshTransactions } = useTransactions();
   
   const [amount, setAmount] = useState<string>('');
   const [type, setType] = useState<TransactionType>('expense');
@@ -74,6 +76,9 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
         note: note || undefined,
         date: date,
       });
+      
+      // Refresh all transaction data
+      await refreshTransactions();
       
       setAmount('');
       setType('expense');

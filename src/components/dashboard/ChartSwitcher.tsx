@@ -1,44 +1,32 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useAuthContext } from '@/lib/AuthContext';
 import { useTheme } from '@/lib/ThemeContext';
-import { transactionApi } from '@/lib/api-client';
 import { transformApiTransactionsToType } from '@/lib/transaction-utils';
 import { Transaction, ChartTimeframe } from '@/types';
 import { DailyChart } from './DailyChart';
 import { WeeklyChart } from './WeeklyChart';
 import { MonthlyChart } from './MonthlyChart';
 import { Spinner } from '../ui/Spinner';
+import { useTransactions } from '@/lib/TransactionContext';
 
 export function ChartSwitcher() {
-  const { user } = useAuthContext();
   const { colors } = useTheme();
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const { transactions: apiTransactions, loading, error: transactionError } = useTransactions();
+  const [transformedTransactions, setTransformedTransactions] = useState<Transaction[]>([]);
   const [timeframe, setTimeframe] = useState<ChartTimeframe>('daily');
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
   useEffect(() => {
-    const fetchTransactions = async () => {
-      if (!user) return;
-      
-      try {
-        setLoading(true);
-        const data = await transactionApi.getAll();
-        // Transform API transactions to the format expected by chart components
-        const transformedData = transformApiTransactionsToType(data);
-        setTransactions(transformedData);
-      } catch (err) {
-        console.log('Error fetching transactions for chart:', err);
-        setError('Failed to load transaction data');
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchTransactions();
-  }, [user]);
+    try {
+      // Transform API transactions to the format expected by chart components
+      const transformedData = transformApiTransactionsToType(apiTransactions);
+      setTransformedTransactions(transformedData);
+    } catch (err) {
+      console.log('Error transforming transactions for chart:', err);
+      setError('Failed to process transaction data for chart');
+    }
+  }, [apiTransactions]);
   
   const renderChart = () => {
     if (loading) {
@@ -49,15 +37,15 @@ export function ChartSwitcher() {
       );
     }
     
-    if (error) {
+    if (error || transactionError) {
       return (
         <div className={`flex justify-center items-center h-64 ${colors.semanticColors.text.error}`}>
-          {error}
+          {error || transactionError}
         </div>
       );
     }
     
-    if (transactions.length === 0) {
+    if (transformedTransactions.length === 0) {
       return (
         <div className={`flex justify-center items-center h-64 ${colors.semanticColors.text.tertiary}`}>
           No transaction data to display
@@ -67,13 +55,13 @@ export function ChartSwitcher() {
     
     switch (timeframe) {
       case 'daily':
-        return <DailyChart transactions={transactions} />;
+        return <DailyChart transactions={transformedTransactions} />;
       case 'weekly':
-        return <WeeklyChart transactions={transactions} />;
+        return <WeeklyChart transactions={transformedTransactions} />;
       case 'monthly':
-        return <MonthlyChart transactions={transactions} />;
+        return <MonthlyChart transactions={transformedTransactions} />;
       default:
-        return <DailyChart transactions={transactions} />;
+        return <DailyChart transactions={transformedTransactions} />;
     }
   };
   

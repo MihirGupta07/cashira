@@ -1,18 +1,13 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
+import { PUBLIC_ROUTES } from './lib/constants';
 
 export async function middleware(request: NextRequest) {
   // Get the pathname of the request
   const path = request.nextUrl.pathname;
 
-  // Define public paths that don't require authentication
-  const publicPaths = [
-    '/',
-    '/login',
-  ];
-
   // Check if the path is public
-  const isPublic = publicPaths.some((publicPath) => 
+  const isPublic = PUBLIC_ROUTES.some((publicPath) => 
     path === publicPath || path.startsWith('/api/')
   );
 

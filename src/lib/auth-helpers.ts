@@ -1,7 +1,8 @@
 import { cookies } from 'next/headers';
 import { adminAuth } from './firebase-admin';
+import { AUTH_CONSTANTS } from './constants';
 
-export interface AuthenticatedUser {
+export type AuthenticatedUser = {
   uid: string;
   email: string | null;
   name?: string | null;
@@ -15,7 +16,7 @@ export interface AuthenticatedUser {
 export async function getAuthenticatedUser(): Promise<AuthenticatedUser | null> {
   try {
     const cookieStore = await cookies();
-    const sessionCookie = cookieStore.get('session')?.value;
+    const sessionCookie = cookieStore.get(AUTH_CONSTANTS.SESSION_COOKIE_NAME)?.value;
 
     if (!sessionCookie) {
       return null;

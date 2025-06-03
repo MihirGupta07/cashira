@@ -1,7 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { ColorMode, getThemeColors } from './colors-dark';
+import { getThemeColors } from './colors-dark';
+import { ColorMode, STORAGE_KEYS } from './constants';
 
 type ThemeContextType = {
   mode: ColorMode;
@@ -24,7 +25,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   // Initialize theme on mount
   useEffect(() => {
     // Check localStorage first
-    const savedTheme = localStorage.getItem('cashira-theme') as ColorMode | null;
+    const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME) as ColorMode | null;
     
     if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
       setModeState(savedTheme);
@@ -43,7 +44,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     
     const handleChange = (e: MediaQueryListEvent) => {
       // Only update if user hasn't set a manual preference
-      const savedTheme = localStorage.getItem('cashira-theme');
+      const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
       if (!savedTheme) {
         setModeState(e.matches ? 'dark' : 'light');
       }
@@ -87,7 +88,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
 
   const setMode = (newMode: ColorMode) => {
     setModeState(newMode);
-    localStorage.setItem('cashira-theme', newMode);
+    localStorage.setItem(STORAGE_KEYS.THEME, newMode);
   };
 
   const toggleTheme = () => {

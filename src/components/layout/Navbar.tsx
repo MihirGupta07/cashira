@@ -2,19 +2,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useAuthContext } from '@/lib/AuthContext';
 import { useTheme } from '@/lib/ThemeContext';
 import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { 
   HomeIcon, 
   ChartBarIcon, 
   UserCircleIcon,
-  ArrowRightOnRectangleIcon,
   BanknotesIcon
 } from '@heroicons/react/24/outline';
 
 export function Navbar() {
-  const { signOut } = useAuthContext();
   const { colors } = useTheme();
   const pathname = usePathname();
   
@@ -61,29 +58,14 @@ export function Navbar() {
             </div>
             
             {/* User menu - desktop */}
-            <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+            <div className="hidden sm:ml-6 sm:flex sm:items-center">
               <ThemeToggle />
-              <button
-                onClick={() => signOut()}
-                className={`flex items-center ${colors.semanticColors.text.tertiary} ${colors.semanticColors.hover.text}`}
-                aria-label="Logout"
-              >
-                <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1" />
-                Logout
-              </button>
             </div>
             
             {/* Mobile header right section */}
             <div className="flex items-center sm:hidden">
-              <div className="flex items-center space-x-4 pr-1">
+              <div className="flex items-center">
                 <ThemeToggle />
-                <button
-                  onClick={() => signOut()}
-                  className={`flex items-center justify-center w-10 h-10 ${colors.semanticColors.text.tertiary} ${colors.semanticColors.hover.text}`}
-                  aria-label="Logout"
-                >
-                  <ArrowRightOnRectangleIcon className="h-6 w-6" />
-                </button>
               </div>
             </div>
           </div>

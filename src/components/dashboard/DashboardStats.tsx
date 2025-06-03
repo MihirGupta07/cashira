@@ -6,8 +6,9 @@ import {
   ArrowTrendingDownIcon, 
   BanknotesIcon 
 } from '@heroicons/react/24/outline';
-import { transactionApi } from '@/lib/api-client';
 import { useTheme } from '@/lib/ThemeContext';
+import { useCurrency } from '@/lib/CurrencyContext';
+import { useTransactions } from '@/lib/TransactionContext';
 
 interface Stats {
   totalIncome: number;
@@ -17,21 +18,17 @@ interface Stats {
 
 export function DashboardStats() {
   const { colors } = useTheme();
+  const { formatAmount, isLoading: isCurrencyLoading } = useCurrency();
+  const { transactions, loading: isTransactionsLoading, error: transactionError } = useTransactions();
   const [stats, setStats] = useState<Stats>({ totalIncome: 0, totalExpenses: 0, balance: 0 });
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
 
   useEffect(() => {
-    fetchTransactions();
-  }, []);
+    calculateStats();
+  }, [transactions]);
 
-  const fetchTransactions = async () => {
+  const calculateStats = () => {
     try {
-      setLoading(true);
-      setError('');
-      
-      const transactions = await transactionApi.getAll();
-      
       const income = transactions
         .filter(t => t.type === 'income')
         .reduce((sum, t) => sum + t.amount, 0);
@@ -46,21 +43,12 @@ export function DashboardStats() {
         balance: income - expenses,
       });
     } catch (err) {
-      console.error('Error fetching transactions:', err);
-      setError('Failed to load transaction data');
-    } finally {
-      setLoading(false);
+      console.error('Error calculating stats:', err);
+      setError('Failed to calculate transaction stats');
     }
   };
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(amount);
-  };
-
-  if (loading) {
+  if (isCurrencyLoading || isTransactionsLoading) {
     return (
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {[...Array(3)].map((_, i) => (
@@ -73,10 +61,10 @@ export function DashboardStats() {
     );
   }
 
-  if (error) {
+  if (error || transactionError) {
     return (
       <div className={`${colors.componentColors.errorAlert} p-4`}>
-        <p className={colors.semanticColors.text.error}>{error}</p>
+        <p className={colors.semanticColors.text.error}>{error || transactionError}</p>
       </div>
     );
   }
@@ -92,7 +80,7 @@ export function DashboardStats() {
           <div>
             <p className={`text-sm font-medium ${colors.semanticColors.text.tertiary}`}>Total Income</p>
             <p className={`text-2xl numeric ${colors.semanticColors.text.primary}`}>
-              {formatCurrency(stats.totalIncome)}
+              {formatAmount(stats.totalIncome)}
             </p>
           </div>
         </div>
@@ -107,7 +95,7 @@ export function DashboardStats() {
           <div>
             <p className={`text-sm font-medium ${colors.semanticColors.text.tertiary}`}>Total Expenses</p>
             <p className={`text-2xl numeric ${colors.semanticColors.text.primary}`}>
-              {formatCurrency(stats.totalExpenses)}
+              {formatAmount(stats.totalExpenses)}
             </p>
           </div>
         </div>
@@ -126,7 +114,7 @@ export function DashboardStats() {
                 ? colors.semanticColors.text.income
                 : colors.semanticColors.text.expense
             }`}>
-              {formatCurrency(stats.balance)}
+              {formatAmount(stats.balance)}
             </p>
           </div>
         </div>

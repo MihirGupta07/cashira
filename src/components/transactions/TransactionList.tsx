@@ -6,6 +6,7 @@ import { useAuthContext } from '@/lib/AuthContext';
 import { transactionApi, Transaction } from '@/lib/api-client';
 import { TransactionItem } from './TransactionItem';
 import { useTheme } from '@/lib/ThemeContext';
+import { useTransactions } from '@/lib/TransactionContext';
 
 type GroupedTransactions = {
   [key: string]: Transaction[];
@@ -17,21 +18,20 @@ export interface TransactionListRef {
 
 export const TransactionList = forwardRef<TransactionListRef>(function TransactionList(props, ref) {
   const { user } = useAuthContext();
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string>('');
-  const [groupedTransactions, setGroupedTransactions] = useState<GroupedTransactions>({});
   const { colors } = useTheme();
-  const fetchTransactions = async () => {
-    if (!user) return;
-    
+  const { transactions, loading, error: transactionError, refreshTransactions } = useTransactions();
+  const [groupedTransactions, setGroupedTransactions] = useState<GroupedTransactions>({});
+  const [error, setError] = useState<string>('');
+
+  useEffect(() => {
+    // Group transactions by date whenever transactions change
+    groupTransactionsByDate();
+  }, [transactions]);
+
+  const groupTransactionsByDate = () => {
     try {
-      setLoading(true);
-      const fetchedTransactions = await transactionApi.getAll();
-      setTransactions(fetchedTransactions);
-      
       // Group transactions by date
-      const grouped = fetchedTransactions.reduce<GroupedTransactions>((acc, transaction) => {
+      const grouped = transactions.reduce<GroupedTransactions>((acc, transaction) => {
         const date = new Date(transaction.date);
         const today = new Date();
         const yesterday = new Date(today);
@@ -57,20 +57,14 @@ export const TransactionList = forwardRef<TransactionListRef>(function Transacti
       
       setGroupedTransactions(grouped);
     } catch (err) {
-      console.log('Error fetching transactions:', err);
-      setError('Failed to load transactions');
-    } finally {
-      setLoading(false);
+      console.error('Error grouping transactions:', err);
+      setError('Failed to process transactions');
     }
   };
 
-  useEffect(() => {
-    fetchTransactions();
-  }, [user]);
-
   // Expose refresh method to parent component
   useImperativeHandle(ref, () => ({
-    refresh: fetchTransactions
+    refresh: refreshTransactions
   }));
   
   const handleDelete = async (transactionId: string) => {
@@ -79,23 +73,8 @@ export const TransactionList = forwardRef<TransactionListRef>(function Transacti
     if (window.confirm('Are you sure you want to delete this transaction?')) {
       try {
         await transactionApi.delete(transactionId);
-        setTransactions((prev) => prev.filter((t) => t.id !== transactionId));
-        
-        // Update grouped transactions
-        setGroupedTransactions((prev) => {
-          const newGrouped = { ...prev };
-          
-          Object.keys(newGrouped).forEach((key) => {
-            newGrouped[key] = newGrouped[key].filter((t) => t.id !== transactionId);
-            
-            // Remove empty groups
-            if (newGrouped[key].length === 0) {
-              delete newGrouped[key];
-            }
-          });
-          
-          return newGrouped;
-        });
+        // After successful deletion, refresh all transactions
+        refreshTransactions();
       } catch (err) {
         console.error('Error deleting transaction:', err);
       }
@@ -110,10 +89,10 @@ export const TransactionList = forwardRef<TransactionListRef>(function Transacti
     );
   }
   
-  if (error) {
+  if (error || transactionError) {
     return (
       <div className="bg-red-50 border-l-4 border-red-500 p-4 min-h-[100px] transition-all duration-300 ease-in-out">
-        <p className="text-red-700">{error}</p>
+        <p className="text-red-700">{error || transactionError}</p>
       </div>
     );
   }
