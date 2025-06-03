@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Outfit } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from '@/lib/AuthContext';
-import { ThemeProvider } from 'next-themes';
-import { ThemeMetaTags } from '@/components/ui/ThemeMetaTags';
+import { ThemeProvider } from '@/lib/ThemeContext';
 
-const inter = Inter({
+const outfit = Outfit({
   subsets: ["latin"],
-  variable: "--font-inter",
+  variable: "--font-outfit",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
@@ -41,9 +41,9 @@ export const metadata: Metadata = {
     "apple-mobile-web-app-capable": "yes",
     "application-name": "Cashira",
     "apple-mobile-web-app-title": "Cashira",
-    "msapplication-navbutton-color": "#8b45ff",
+    "msapplication-navbutton-color": "#374151",
     "msapplication-starturl": "/",
-    "msapplication-TileColor": "#8b45ff",
+    "msapplication-TileColor": "#374151",
   }
 };
 
@@ -53,15 +53,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className={`${inter.variable} antialiased bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100`}>
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme="system" 
-          enableSystem={true}
-          disableTransitionOnChange={false}
-        >
-          <ThemeMetaTags />
+    <html lang="en">
+      <body className={`${outfit.variable} antialiased`}>
+        <ThemeProvider>
           <AuthProvider>
             {children}
           </AuthProvider>

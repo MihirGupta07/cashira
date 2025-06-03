@@ -21,11 +21,49 @@ html, body {
 }
 
 body {
-  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
   padding-top: var(--safe-top);
   padding-bottom: var(--safe-bottom);
   padding-left: var(--safe-left);
   padding-right: var(--safe-right);
+  /* Let theme context handle background colors */
+  background-color: transparent;
+  letter-spacing: 0.01em;
+}
+
+/* Global theme transition */
+*, *::before, *::after {
+  transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 300ms;
+}
+
+/* Typography styles */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 600;
+}
+
+/* App brand in navbar */
+.brand-text {
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+/* Numeric values */
+.numeric {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Dark mode theme styles */
+.dark body {
+  background-color: rgb(17 24 39); /* gray-900 */
+}
+
+.light body {
+  background-color: rgb(255 255 255); /* white */
 }
 
 /* Mobile-optimized scrollable areas */
@@ -73,5 +111,5 @@ a.button,
 
 /* Dark mode splash screen */
 .dark .splash-screen {
-  background-color: rgb(17 24 39);
+  background-color: rgb(17 24 39); /* gray-900 */
 }

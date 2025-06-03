@@ -9,6 +9,7 @@ import {
 import { useRouter } from "next/navigation";
 import { auth, googleProvider } from "../firebase";
 import { authApi, User } from "../auth-api-client";
+import { saveUserProfile } from "../user-profile";
 
 // Improved mobile detection function
 const isMobileDevice = () => {
@@ -46,6 +47,11 @@ export function useAuthApi() {
           const idToken = await redirectResult.user.getIdToken();
           const apiUser = await authApi.signInWithGoogle(idToken);
           setUser(apiUser);
+          
+          // Only save profile during initial redirect auth flow
+          // This occurs after the first signup/login via redirect
+          await saveUserProfile(apiUser);
+          
           router.push("/dashboard");
           return;
         }
@@ -53,6 +59,8 @@ export function useAuthApi() {
         // Then check for existing session
         const currentUser = await authApi.getCurrentUser();
         setUser(currentUser);
+        
+        // Remove the profile saving here - we only want to save on signup
       } catch (error) {
         console.error("Error checking session:", error);
         setUser(null);
@@ -81,6 +89,9 @@ export function useAuthApi() {
       // Send the ID token to our API
       const apiUser = await authApi.signInWithGoogle(idToken);
       setUser(apiUser);
+      
+      // Save user profile to Firestore during initial signup/login
+      await saveUserProfile(apiUser);
 
       router.push("/dashboard");
       return apiUser;

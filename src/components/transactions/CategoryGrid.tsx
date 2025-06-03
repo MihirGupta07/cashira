@@ -1,11 +1,12 @@
 'use client';
 
 import { Category } from '@/types';
+import { useTheme } from '@/lib/ThemeContext';
 
 type CategoryGridProps = {
   categories: Category[];
   selectedCategoryId: string;
-  onSelectCategory: (id: string) => void;
+  onSelectCategory: (categoryId: string) => void;
 };
 
 export function CategoryGrid({ 
@@ -13,21 +14,27 @@ export function CategoryGrid({
   selectedCategoryId, 
   onSelectCategory 
 }: CategoryGridProps) {
+  const { colors } = useTheme();
+  
   return (
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3 transition-all duration-300 ease-in-out">
       {categories.map((category) => (
         <button
           key={category.id}
           type="button"
           onClick={() => onSelectCategory(category.id)}
-          className={`flex flex-col items-center justify-center p-3 rounded-lg border ${
+          className={`flex flex-col items-center justify-center p-3 h-20 rounded-lg border transition-all duration-300 ease-in-out ${
             selectedCategoryId === category.id
-              ? 'bg-primary-50 dark:bg-primary-900/20 border-primary-400 dark:border-primary-700'
-              : 'bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+              ? `${colors.semanticColors.background.primaryButton} ${colors.semanticColors.border.brand}`
+              : `${colors.semanticColors.background.primary} ${colors.semanticColors.border.secondary} ${colors.semanticColors.hover.background}`
           }`}
         >
           <span className="text-2xl mb-1">{category.icon}</span>
-          <span className="text-xs font-medium text-gray-700 dark:text-gray-300">
+          <span className={`text-xs font-medium min-h-[1rem] ${
+            selectedCategoryId === category.id 
+              ? colors.semanticColors.text.primary
+              : colors.semanticColors.text.secondary
+          }`}>
             {category.name}
           </span>
         </button>

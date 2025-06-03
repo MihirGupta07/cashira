@@ -1,61 +1,73 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/lib/AuthContext';
+import { useTheme } from '@/lib/ThemeContext';
 import { GoogleSignInButton } from '@/components/auth/GoogleSignInButton';
+import { BanknotesIcon } from '@heroicons/react/24/outline';
 
 export default function LoginPage() {
+  const { colors, isDark } = useTheme();
+  const { user, loading, signInWithGoogle } = useAuthContext();
   const router = useRouter();
-  const { isAuthenticated, loading, signInWithGoogle } = useAuthContext();
-  const [debugInfo, setDebugInfo] = useState<string>('');
-  
+
   useEffect(() => {
-    if (isAuthenticated && !loading) {
+    if (user && !loading) {
       router.push('/dashboard');
     }
-  }, [isAuthenticated, loading, router]);
+  }, [user, loading, router]);
 
-  // Add debug information for mobile testing
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const ua = window.navigator.userAgent;
-      const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(ua);
-      const isSmallScreen = window.innerWidth <= 768;
-      const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
-      console.log(isMobile);
-      setDebugInfo(`
-        User Agent: ${ua}
-        Is Mobile: ${isMobile}
-        Screen Width: ${window.innerWidth}
-        Is Small Screen: ${isSmallScreen}
-        Is Touch Device: ${isTouchDevice}
-        Combined Mobile Detection: ${isMobile || (isSmallScreen && isTouchDevice)}
-      `);
-    }
-  }, []);
-  
+  if (loading) {
+    return (
+      <div className={`min-h-screen ${colors.semanticColors.background.primary} flex items-center justify-center`}>
+        <div className={`animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 ${colors.semanticColors.loading.spinner}`}></div>
+      </div>
+    );
+  }
+
+  if (user) {
+    return null; // Will redirect to dashboard
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="max-w-md w-full space-y-8 p-10 bg-white dark:bg-gray-800 rounded-xl shadow-md">
-        <div className="text-center">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Cashira</h1>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Track your money, seamlessly</p>
+    <div className={`min-h-screen ${colors.semanticColors.background.primary} flex flex-col items-center justify-center py-12 px-4 sm:px-6 lg:px-8`}>
+      {/* Theme-colored top accent bar */}
+      <div className={`absolute top-0 left-0 right-0 h-1 bg-${isDark ? 'yellow' : 'violet'}-500 w-full`}></div>
+      
+      <div className="max-w-md w-full space-y-8">
+        <div>
+          <h2 className={`mt-6 text-center text-3xl font-bold ${colors.semanticColors.text.primary}`}>
+            Welcome to <span className={`brand-text ${colors.semanticColors.text.brand}`}>Cashira <BanknotesIcon className="inline-block h-8 w-8 stroke-2" /></span>
+          </h2>
+          <p className={`mt-2 text-center text-sm ${colors.semanticColors.text.tertiary}`}>
+            Track your money, seamlessly
+          </p>
         </div>
         
-        {/* Debug info - only show in development */}
-        {process.env.NODE_ENV !== 'development' && (
-          <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded">
-            <details>
-              <summary>Debug Info (Dev Only)</summary>
-              <pre className="whitespace-pre-wrap text-xs mt-2">{debugInfo}</pre>
-            </details>
+        <div className={`${colors.componentColors.card} p-8 border-t-4 border-${isDark ? 'yellow' : 'violet'}-500`}>
+          <div className="space-y-6">
+            <div className="text-center">
+              <h3 className={`text-lg font-medium ${colors.semanticColors.text.primary}`}>
+                Sign in to your account
+              </h3>
+              <p className={`mt-2 text-sm ${colors.semanticColors.text.tertiary}`}>
+                Get started with your financial journey
+              </p>
+            </div>
+            
+            <GoogleSignInButton onSignIn={signInWithGoogle} isLoading={loading} />
+            
+            <div className={`text-center text-xs ${colors.semanticColors.text.light}`}>
+              By signing in, you agree to our terms of service and privacy policy
+            </div>
           </div>
-        )}
-        
-        <div className="mt-8">
-          <GoogleSignInButton onSignIn={signInWithGoogle} isLoading={loading} />
         </div>
+        
+        {/* Theme colored footer text */}
+        <p className={`text-center text-sm text-${isDark ? 'yellow' : 'violet'}-500 mt-4`}>
+          Manage your finances with confidence
+        </p>
       </div>
     </div>
   );

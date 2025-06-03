@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/lib/AuthContext';
+import { useTheme } from '@/lib/ThemeContext';
 import { transactionApi } from '@/lib/api-client';
 import { TransactionType, Category } from '@/types';
 import { CategoryGrid } from './CategoryGrid';
@@ -32,6 +33,7 @@ type TransactionFormProps = {
 export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
   const router = useRouter();
   const { user } = useAuthContext();
+  const { colors } = useTheme();
   
   const [amount, setAmount] = useState<string>('');
   const [type, setType] = useState<TransactionType>('expense');
@@ -96,14 +98,14 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="bg-red-50 dark:bg-red-900/20 border-l-4 border-red-500 p-4 mb-4">
-          <p className="text-red-700 dark:text-red-400">{error}</p>
+        <div className={`${colors.componentColors.errorAlert} p-4 mb-4`}>
+          <p className={colors.semanticColors.text.error}>{error}</p>
         </div>
       )}
       
       {/* Amount */}
       <div>
-        <label htmlFor="amount" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="amount" className={`block text-sm font-medium ${colors.semanticColors.text.secondary}`}>
           Amount
         </label>
         <div className="mt-1">
@@ -116,7 +118,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
             required
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            className={`mt-1 block w-full px-3 py-2 rounded-md shadow-sm text-sm ${colors.componentColors.input} ${colors.semanticColors.text.placeholder}`}
             placeholder="0.00"
           />
         </div>
@@ -124,7 +126,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
       
       {/* Transaction Type */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className={`block text-sm font-medium ${colors.semanticColors.text.secondary} mb-2`}>
           Transaction Type
         </label>
         <div className="flex space-x-4">
@@ -133,8 +135,8 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
             onClick={() => setType('expense')}
             className={`flex-1 py-2 px-4 rounded-md flex items-center justify-center space-x-2 ${
               type === 'expense'
-                ? 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-300 dark:border-red-800'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700'
+                ? `${colors.semanticColors.background.error} ${colors.semanticColors.text.error} ${colors.semanticColors.border.error}`
+                : `${colors.semanticColors.background.tertiary} ${colors.semanticColors.text.secondary} ${colors.semanticColors.border.primary}`
             }`}
           >
             <MinusIcon className="h-5 w-5" />
@@ -145,8 +147,8 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
             onClick={() => setType('income')}
             className={`flex-1 py-2 px-4 rounded-md flex items-center justify-center space-x-2 ${
               type === 'income'
-                ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border border-green-300 dark:border-green-800'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-700'
+                ? `${colors.semanticColors.background.success} ${colors.semanticColors.text.success} ${colors.semanticColors.border.success}`
+                : `${colors.semanticColors.background.tertiary} ${colors.semanticColors.text.secondary} ${colors.semanticColors.border.primary}`
             }`}
           >
             <PlusIcon className="h-5 w-5" />
@@ -157,7 +159,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
       
       {/* Category */}
       <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+        <label className={`block text-sm font-medium ${colors.semanticColors.text.secondary} mb-2`}>
           Category
         </label>
         <CategoryGrid 
@@ -169,7 +171,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
       
       {/* Date */}
       <div>
-        <label htmlFor="date" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="date" className={`block text-sm font-medium ${colors.semanticColors.text.secondary}`}>
           Date
         </label>
         <div className="mt-1">
@@ -179,14 +181,14 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
             id="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            className={`mt-1 block w-full px-3 py-2 rounded-md shadow-sm ${colors.componentColors.input}`}
           />
         </div>
       </div>
       
       {/* Note */}
       <div>
-        <label htmlFor="note" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+        <label htmlFor="note" className={`block text-sm font-medium ${colors.semanticColors.text.secondary}`}>
           Note (Optional)
         </label>
         <div className="mt-1">
@@ -196,7 +198,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
             value={note}
             onChange={(e) => setNote(e.target.value)}
             rows={3}
-            className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm placeholder-gray-400 focus:outline-none focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+            className={`mt-1 block w-full px-3 py-2 rounded-md shadow-sm text-sm ${colors.componentColors.input} ${colors.semanticColors.text.placeholder}`}
             placeholder="Add a note..."
           />
         </div>
@@ -207,7 +209,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
         <button
           type="submit"
           disabled={isSubmitting}
-          className="flex-1 py-2 px-4 border border-transparent dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 disabled:opacity-50"
+          className={`flex-1 py-2 px-4 rounded-md shadow-sm text-sm font-medium disabled:opacity-50 ${colors.componentColors.button.primary}`}
         >
           {isSubmitting ? 'Adding...' : 'Add Transaction'}
         </button>
@@ -215,7 +217,7 @@ export function TransactionForm({ onSuccess, onCancel }: TransactionFormProps) {
           <button
             type="button"
             onClick={onCancel}
-            className="py-2 px-4 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            className={`py-2 px-4 rounded-md shadow-sm text-sm font-medium ${colors.componentColors.button.secondary}`}
           >
             Cancel
           </button>

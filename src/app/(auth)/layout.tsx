@@ -2,6 +2,7 @@
 
 import { ReactNode } from 'react';
 import { AuthProvider } from '@/lib/AuthContext';
+import { ThemeProvider } from '@/lib/ThemeContext';
 
 export default function AuthLayout({
   children,
@@ -9,10 +10,10 @@ export default function AuthLayout({
   children: ReactNode;
 }) {
   return (
-    <AuthProvider>
-      <div className="min-h-screen bg-gray-100 dark:bg-gray-900">
+    <ThemeProvider>
+      <AuthProvider>
         {children}
-      </div>
-    </AuthProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 } 

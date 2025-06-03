@@ -1,12 +1,9 @@
 'use client';
 
 import { format } from 'date-fns';
-import { 
-  ArrowTrendingUpIcon, 
-  ArrowTrendingDownIcon,
-  TrashIcon
-} from '@heroicons/react/24/outline';
+import { TrashIcon } from '@heroicons/react/24/outline';
 import { Transaction } from '@/lib/api-client';
+import { useTheme } from '@/lib/ThemeContext';
 
 // Default category emoji mapping
 const CATEGORY_EMOJI: { [key: string]: string } = {
@@ -26,11 +23,14 @@ const CATEGORY_EMOJI: { [key: string]: string } = {
 
 type TransactionItemProps = {
   transaction: Transaction;
-  onDelete: () => void;
+  onDelete: (id: string) => void;
 };
 
 export function TransactionItem({ transaction, onDelete }: TransactionItemProps) {
+  const { colors } = useTheme();
   const { amount, type, category, note, date } = transaction;
+  
+  // Since API client returns string dates, we can directly parse them
   const formattedDate = format(new Date(date), 'h:mm a');
   const isIncome = type === 'income';
   
@@ -38,41 +38,41 @@ export function TransactionItem({ transaction, onDelete }: TransactionItemProps)
   const emoji = CATEGORY_EMOJI[category] || '❓';
   
   return (
-    <div className="flex items-center p-3 bg-white dark:bg-gray-800 rounded-lg shadow-sm">
-      <div className="flex-shrink-0 mr-3 h-10 w-10 rounded-full flex items-center justify-center bg-gray-100 dark:bg-gray-700">
+    <div className={`flex items-center p-3 h-20 ${colors.semanticColors.background.primary} rounded-lg shadow-sm border ${colors.semanticColors.border.secondary} transition-all duration-300 ease-in-out`}>
+      <div className={`flex-shrink-0 mr-3 h-10 w-10 rounded-full flex items-center justify-center ${colors.semanticColors.background.tertiary}`}>
         <span className="text-xl">{emoji}</span>
       </div>
       
-      <div className="flex-1 min-w-0">
-        <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
-          {category.charAt(0).toUpperCase() + category.slice(1)}
-        </p>
-        {note && (
-          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
-            {note}
+      <div className="flex-grow min-w-0">
+        <div className="flex items-center justify-between">
+          <p className={`text-sm font-medium ${colors.semanticColors.text.primary} truncate`}>
+            {category.charAt(0).toUpperCase() + category.slice(1)}
           </p>
-        )}
-        <p className="text-xs text-gray-500 dark:text-gray-400">
-          {formattedDate}
+          <div className="flex items-center space-x-2">
+            <p className={`text-xs ${colors.semanticColors.text.tertiary} truncate`}>
+              {formattedDate}
+            </p>
+          </div>
+        </div>
+        <p className={`text-xs ${colors.semanticColors.text.tertiary} min-h-[1.25rem]`}>
+          {note || 'No note'}
         </p>
       </div>
       
-      <div className="flex items-center space-x-4">
-        <div className={`flex items-center ${isIncome ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-          {isIncome ? (
-            <ArrowTrendingUpIcon className="h-4 w-4 mr-1" />
-          ) : (
-            <ArrowTrendingDownIcon className="h-4 w-4 mr-1" />
-          )}
+      <div className="flex items-center space-x-2 ml-4 min-w-[80px] justify-end">
+        <div className={`flex items-center ${isIncome ? colors.semanticColors.text.income : colors.semanticColors.text.expense}`}>
+          <span className="text-lg font-bold mr-1">
+            {isIncome ? '+' : '-'}
+          </span>
           <span className="text-sm font-medium">${amount.toFixed(2)}</span>
         </div>
         
         <button
-          onClick={onDelete}
-          className="text-gray-400 hover:text-red-500 dark:text-gray-500 dark:hover:text-red-400 p-1"
+          onClick={() => onDelete(transaction.id)}
+          className={`${colors.semanticColors.text.light} ${colors.semanticColors.hover.errorText} p-1`}
           aria-label="Delete transaction"
         >
-          <TrashIcon className="h-5 w-5" />
+          <TrashIcon className="h-4 w-4" />
         </button>
       </div>
     </div>

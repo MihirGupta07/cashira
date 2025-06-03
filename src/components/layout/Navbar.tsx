@@ -1,130 +1,119 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthContext } from '@/lib/AuthContext';
-import { ThemeSwitcher } from '@/components/ui/ThemeSwitcher';
+import { useTheme } from '@/lib/ThemeContext';
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
 import { 
   HomeIcon, 
   ChartBarIcon, 
+  UserCircleIcon,
   ArrowRightOnRectangleIcon,
-  Bars3Icon,
-  XMarkIcon
+  BanknotesIcon
 } from '@heroicons/react/24/outline';
 
 export function Navbar() {
   const { signOut } = useAuthContext();
+  const { colors } = useTheme();
   const pathname = usePathname();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  
-  const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
   
   const navLinks = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
     { name: 'Transactions', href: '/transactions', icon: ChartBarIcon },
+    { name: 'Profile', href: '/profile', icon: UserCircleIcon },
   ];
   
   return (
-    <nav className="bg-white dark:bg-gray-800 border-b dark:border-gray-700">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16">
-          <div className="flex">
-            <div className="flex-shrink-0 flex items-center">
-              <Link href="/dashboard" className="text-xl font-bold text-primary-600 dark:text-primary-400">
-                Cashira
+    <>
+      <nav className={`${colors.semanticColors.background.primary} border-b ${colors.semanticColors.border.secondary} sticky top-0 z-40`}>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16">
+            <div className="flex">
+              <div className="flex-shrink-0 flex items-center">
+                <Link href="/dashboard" className={`text-xl brand-text ${colors.semanticColors.text.brand}`}>
+                  Cashira <BanknotesIcon className="inline-block h-6 w-6 stroke-1.5" />
+                </Link>
+              </div>
+              
+              {/* Desktop menu */}
+              <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
+                {navLinks.map((link) => {
+                  const Icon = link.icon;
+                  const isActive = pathname === link.href;
+                  
+                  return (
+                    <Link
+                      key={link.name}
+                      href={link.href}
+                      className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                        isActive 
+                          ? `${colors.semanticColors.border.brand} ${colors.semanticColors.text.primary}` 
+                          : `${colors.semanticColors.border.transparent} ${colors.semanticColors.text.tertiary} ${colors.semanticColors.hover.text}`
+                      }`}
+                    >
+                      <Icon className="mr-1 h-5 w-5" />
+                      {link.name}
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+            
+            {/* User menu - desktop */}
+            <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
+              <ThemeToggle />
+              <button
+                onClick={() => signOut()}
+                className={`flex items-center ${colors.semanticColors.text.tertiary} ${colors.semanticColors.hover.text}`}
+                aria-label="Logout"
+              >
+                <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1" />
+                Logout
+              </button>
+            </div>
+            
+            {/* Mobile header right section */}
+            <div className="flex items-center sm:hidden">
+              <div className="flex items-center space-x-4 pr-1">
+                <ThemeToggle />
+                <button
+                  onClick={() => signOut()}
+                  className={`flex items-center justify-center w-10 h-10 ${colors.semanticColors.text.tertiary} ${colors.semanticColors.hover.text}`}
+                  aria-label="Logout"
+                >
+                  <ArrowRightOnRectangleIcon className="h-6 w-6" />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Bottom Navigation Bar */}
+      <div className={`sm:hidden fixed bottom-0 left-0 right-0 ${colors.semanticColors.background.primary} border-t ${colors.semanticColors.border.secondary} z-50`}>
+        <div className="flex justify-around">
+          {navLinks.map((link) => {
+            const Icon = link.icon;
+            const isActive = pathname === link.href;
+            
+            return (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`flex flex-col items-center py-3 px-2 flex-1 ${
+                  isActive 
+                    ? `${colors.semanticColors.text.brandActive}` 
+                    : `${colors.semanticColors.text.tertiary} ${colors.semanticColors.hover.text}`
+                }`}
+              >
+                <Icon className="h-6 w-6" />
+                <span className="text-xs mt-1">{link.name}</span>
               </Link>
-            </div>
-            
-            {/* Desktop menu */}
-            <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
-              {navLinks.map((link) => {
-                const Icon = link.icon;
-                const isActive = pathname === link.href;
-                
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.href}
-                    className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                      isActive 
-                        ? 'border-primary-500 text-gray-900 dark:text-white' 
-                        : 'border-transparent text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'
-                    }`}
-                  >
-                    <Icon className="mr-1 h-5 w-5" />
-                    {link.name}
-                  </Link>
-                );
-              })}
-            </div>
-          </div>
-          
-          {/* User menu */}
-          <div className="hidden sm:ml-6 sm:flex sm:items-center space-x-4">
-            <ThemeSwitcher />
-            
-            <button
-              onClick={() => signOut()}
-              className="flex items-center text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
-            >
-              <ArrowRightOnRectangleIcon className="h-5 w-5 mr-1" />
-              Logout
-            </button>
-          </div>
-          
-          {/* Mobile menu button */}
-          <div className="flex items-center sm:hidden">
-            <ThemeSwitcher />
-            
-            <button
-              onClick={toggleMenu}
-              className="ml-2 inline-flex items-center justify-center p-2 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none"
-            >
-              {isMenuOpen ? (
-                <XMarkIcon className="h-6 w-6" />
-              ) : (
-                <Bars3Icon className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+            );
+          })}
         </div>
       </div>
-      
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="sm:hidden">
-          <div className="pt-2 pb-3 space-y-1">
-            {navLinks.map((link) => {
-              const Icon = link.icon;
-              const isActive = pathname === link.href;
-              
-              return (
-                <Link
-                  key={link.name}
-                  href={link.href}
-                  className={`flex items-center px-3 py-2 text-base font-medium ${
-                    isActive 
-                      ? 'bg-primary-50 dark:bg-primary-900/20 border-l-4 border-primary-500 text-primary-700 dark:text-primary-400' 
-                      : 'border-l-4 border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/30'
-                  }`}
-                >
-                  <Icon className="mr-3 h-5 w-5" />
-                  {link.name}
-                </Link>
-              );
-            })}
-            
-            <button
-              onClick={() => signOut()}
-              className="w-full flex items-center px-3 py-2 text-base font-medium border-l-4 border-transparent text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700/30"
-            >
-              <ArrowRightOnRectangleIcon className="mr-3 h-5 w-5" />
-              Logout
-            </button>
-          </div>
-        </div>
-      )}
-    </nav>
+    </>
   );
 } 

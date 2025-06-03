@@ -1,17 +1,20 @@
 'use client';
 
 import { PlusIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { useTheme } from '@/lib/ThemeContext';
 
-interface AddTransactionButtonProps {
+type AddTransactionButtonProps = {
   showForm: boolean;
   onToggleForm: () => void;
-}
+};
 
 export function AddTransactionButton({ showForm, onToggleForm }: AddTransactionButtonProps) {
+  const { colors } = useTheme();
+  
   return (
     <button 
       onClick={onToggleForm}
-      className="flex items-center gap-1 bg-primary-600 hover:bg-primary-700 text-white py-2 px-4 rounded-md transition-colors"
+      className={`flex items-center gap-1 py-2 px-4 rounded-md transition-colors ${colors.componentColors.button.primary}`}
     >
       {showForm ? (
         <>

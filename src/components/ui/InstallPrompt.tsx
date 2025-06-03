@@ -2,11 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
+import { useTheme } from '@/lib/ThemeContext';
 
-type BeforeInstallPromptEvent = Event & {
-  prompt: () => Promise<void>;
+// Define the BeforeInstallPromptEvent type since it's not in the default types
+interface BeforeInstallPromptEvent extends Event {
+  prompt(): Promise<void>;
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>;
-};
+}
 
 // Extend Window interface to include MSStream property
 declare global {
@@ -16,82 +18,97 @@ declare global {
 }
 
 export function InstallPrompt() {
+  const { colors } = useTheme();
   const [installPrompt, setInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null);
-  const [showBanner, setShowBanner] = useState(false);
-  const [isIOSDevice, setIsIOSDevice] = useState(false);
-  
+  const [isIOS, setIsIOS] = useState(false);
+  const [isInstalled, setIsInstalled] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(false);
+
   useEffect(() => {
-    // Check if it's an iOS device
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-    setIsIOSDevice(isIOS);
-    
-    // Listen for beforeinstallprompt event (for non-iOS)
+    // Check if app is already installed
+    if (window.matchMedia && window.matchMedia('(display-mode: standalone)').matches) {
+      setIsInstalled(true);
+      return;
+    }
+
+    // Check if it's iOS
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    setIsIOS(iOS);
+
+    // Listen for beforeinstallprompt event
     const handleBeforeInstallPrompt = (e: Event) => {
-      // Prevent the default prompt
       e.preventDefault();
-      // Store the event for later use
       setInstallPrompt(e as BeforeInstallPromptEvent);
-      // Show our custom banner
-      setShowBanner(true);
+      setShowPrompt(true);
     };
-    
+
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    
+
+    // For iOS, show prompt after a delay if not installed
+    if (iOS) {
+      const timer = setTimeout(() => {
+        setShowPrompt(true);
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
   }, []);
-  
+
   const handleInstallClick = async () => {
-    if (!installPrompt) return;
-    
-    // Show the native install prompt
-    await installPrompt.prompt();
-    
-    // Wait for the user to respond
-    const choiceResult = await installPrompt.userChoice;
-    
-    // Reset the installPrompt state
-    setInstallPrompt(null);
-    
-    // Hide the banner regardless of choice
-    setShowBanner(false);
-    
-    if (choiceResult.outcome === 'accepted') {
-      console.log('User accepted the install prompt');
-    } else {
-      console.log('User dismissed the install prompt');
+    if (installPrompt) {
+      installPrompt.prompt();
+      const choiceResult = await installPrompt.userChoice;
+      if (choiceResult.outcome === 'accepted') {
+        setShowPrompt(false);
+      }
     }
   };
-  
+
   const handleDismiss = () => {
-    setShowBanner(false);
-    // Store in localStorage to prevent showing again for some time
-    localStorage.setItem('pwa-install-dismissed', Date.now().toString());
+    setShowPrompt(false);
+    // Don't show again for 24 hours
+    localStorage.setItem('installPromptDismissed', Date.now().toString());
   };
-  
-  console.log('showBanner', showBanner);
-  // Don't show anything if there's no install prompt and it's not iOS
-  if (!showBanner) {
+
+  // Don't show if already installed
+  if (isInstalled) {
     return null;
   }
-  
-  // Show a different banner for iOS devices
-  if (isIOSDevice) {
+
+  // Don't show if dismissed recently
+  const dismissedTime = localStorage.getItem('installPromptDismissed');
+  if (dismissedTime) {
+    const timeDiff = Date.now() - parseInt(dismissedTime);
+    const twentyFourHours = 24 * 60 * 60 * 1000;
+    if (timeDiff < twentyFourHours) {
+      return null;
+    }
+  }
+
+  // Don't show if prompt not available
+  if (!showPrompt) {
+    return null;
+  }
+
+  // Show iOS-specific instructions
+  if (isIOS) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 p-4 shadow-lg border-t border-gray-200 dark:border-gray-700 z-50">
-        <div className="flex items-center justify-between">
+      <div className={`fixed bottom-0 left-0 right-0 ${colors.semanticColors.background.primary} p-4 shadow-lg border-t ${colors.semanticColors.border.secondary} z-50`}>
+        <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="text-sm font-medium text-gray-900 dark:text-white">
-              Install Cashira
+            <h3 className={`text-sm font-medium ${colors.semanticColors.text.primary}`}>
+              Install Cashira App
             </h3>
-            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
-              Tap the share button and then &ldquo;Add to Home Screen&rdquo; to install Cashira.
+            <p className={`mt-1 text-xs ${colors.semanticColors.text.tertiary}`}>
+              To install this app: tap the share button in Safari, then &ldquo;Add to Home Screen&rdquo;.
             </p>
           </div>
           <button 
             onClick={handleDismiss}
-            className="ml-4 p-2 text-gray-400 hover:text-gray-500"
+            className={`p-2 ${colors.semanticColors.text.light} ${colors.semanticColors.hover.text}`}
           >
             <XMarkIcon className="h-5 w-5" />
           </button>
@@ -102,26 +119,26 @@ export function InstallPrompt() {
   
   // Show standard install banner for other devices
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-800 p-4 shadow-lg border-t border-gray-200 dark:border-gray-700 z-50">
+    <div className={`fixed bottom-0 left-0 right-0 ${colors.semanticColors.background.primary} p-4 shadow-lg border-t ${colors.semanticColors.border.secondary} z-50`}>
       <div className="flex items-center justify-between">
         <div className="flex-1">
-          <h3 className="text-sm font-medium text-gray-900 dark:text-white">
+          <h3 className={`text-sm font-medium ${colors.semanticColors.text.primary}`}>
             Install Cashira App
           </h3>
-          <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+          <p className={`mt-1 text-xs ${colors.semanticColors.text.tertiary}`}>
             Install our app for a better experience and offline access.
           </p>
         </div>
         <div className="flex space-x-3">
           <button
             onClick={handleInstallClick}
-            className="px-4 py-2 text-xs font-medium text-white bg-primary-600 rounded-md hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
+            className={`px-4 py-2 text-xs font-medium rounded-md ${colors.componentColors.button.primary}`}
           >
             Install
           </button>
           <button 
             onClick={handleDismiss}
-            className="p-2 text-gray-400 hover:text-gray-500"
+            className={`p-2 ${colors.semanticColors.text.light} ${colors.semanticColors.hover.text}`}
           >
             <XMarkIcon className="h-5 w-5" />
           </button>

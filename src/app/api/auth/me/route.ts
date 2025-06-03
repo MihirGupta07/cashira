@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { adminAuth } from '@/lib/firebase-admin';
+import { adminAuth, adminDb } from '@/lib/firebase-admin';
 import { cookies } from 'next/headers';
 
 export async function GET() {
@@ -20,6 +20,17 @@ export async function GET() {
     
     console.log('Auth debug - Session verified for user:', decodedClaims.uid);
     
+    // Get user data from Firestore (includes any additional profile fields)
+    const userDoc = await adminDb.collection('users').doc(decodedClaims.uid).get();
+    
+    // If user exists in Firestore, return that data
+    if (userDoc.exists) {
+      return NextResponse.json({
+        user: userDoc.data()
+      });
+    }
+    
+    // Fallback to basic user data if no Firestore document exists
     return NextResponse.json({
       user: {
         uid: decodedClaims.uid,

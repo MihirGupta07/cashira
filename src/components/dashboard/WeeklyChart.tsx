@@ -14,6 +14,7 @@ import {
 import { Bar } from 'react-chartjs-2';
 import { subWeeks, startOfWeek, endOfWeek } from 'date-fns';
 import { Transaction } from '@/types';
+import { Spinner } from '../ui/Spinner';
 
 // Register ChartJS components
 ChartJS.register(
@@ -93,13 +94,14 @@ export function WeeklyChart({ transactions }: WeeklyChartProps) {
   if (!chartData) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary-500"></div>
+        <Spinner size="medium" />
       </div>
     );
   }
   
   const options = {
     responsive: true,
+    maintainAspectRatio: true,
     plugins: {
       legend: {
         position: 'top' as const,
@@ -120,7 +122,7 @@ export function WeeklyChart({ transactions }: WeeklyChartProps) {
   };
   
   return (
-    <div className="h-64">
+    <div className="w-full h-64 md:h-80 flex items-center justify-center">
       <Bar data={chartData} options={options} />
     </div>
   );
