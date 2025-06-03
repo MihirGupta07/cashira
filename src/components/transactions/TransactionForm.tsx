@@ -5,10 +5,11 @@ import { useRouter } from 'next/navigation';
 import { useAuthContext } from '@/lib/AuthContext';
 import { useTheme } from '@/lib/ThemeContext';
 import { transactionApi } from '@/lib/api-client';
-import { TransactionType, Category } from '@/types';
+import {  Category } from '@/types';
 import { CategoryGrid } from './CategoryGrid';
 import { PlusIcon, MinusIcon } from '@heroicons/react/24/outline';
 import { useTransactions } from '@/lib/TransactionContext';
+import { TransactionType } from '@/lib/constants';
 
 // Default categories with emojis
 const DEFAULT_CATEGORIES: Category[] = [

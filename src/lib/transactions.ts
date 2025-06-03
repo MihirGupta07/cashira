@@ -11,8 +11,8 @@ import {
   Timestamp
 } from 'firebase/firestore';
 import { db } from './firebase';
-import { Transaction, TransactionType } from '../types';
-
+import { Transaction } from '../types';
+import { TransactionType } from './constants';
 // Get user's transaction collection reference
 export const getUserTransactionsRef = (userId: string) => {
   return collection(db, `users/${userId}/transactions`);
