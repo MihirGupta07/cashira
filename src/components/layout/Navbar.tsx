@@ -1,5 +1,6 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useTheme } from '@/lib/ThemeContext';
@@ -14,6 +15,13 @@ import {
 export function Navbar() {
   const { colors } = useTheme();
   const pathname = usePathname();
+  const [isIOS, setIsIOS] = useState(false);
+  
+  useEffect(() => {
+    // Check if it's iOS
+    const iOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    setIsIOS(iOS);
+  }, []);
   
   const navLinks = [
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
@@ -73,7 +81,7 @@ export function Navbar() {
       </nav>
 
       {/* Mobile Bottom Navigation Bar */}
-      <div className={`sm:hidden fixed bottom-0 left-0 right-0 ${colors.semanticColors.background.primary} border-t ${colors.semanticColors.border.secondary} z-50`}>
+      <div className={`sm:hidden fixed bottom-0 left-0 right-0 ${colors.semanticColors.background.primary} border-t ${colors.semanticColors.border.secondary} z-50`} style={{ paddingBottom: isIOS ? '1rem' : '0px' }}>
         <div className="flex justify-around">
           {navLinks.map((link) => {
             const Icon = link.icon;

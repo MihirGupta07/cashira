@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from '@/lib/AuthContext';
 import { ThemeProvider } from '@/lib/ThemeContext';
 import { CurrencyProvider } from '@/lib/CurrencyContext';
+import { DisableZoom } from '@/lib/DisableZoom';
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
   appleWebApp: {
     capable: true,
     title: "Cashira",
+    statusBarStyle: "black-translucent",
     startupImage: [
       { url: "./cashira-black-bg.png", media: "(device-width: 1024px) and (device-height: 1366px) and (-webkit-device-pixel-ratio: 2)" },
       { url: "./cashira-black-bg.png", media: "(device-width: 834px) and (device-height: 1194px) and (-webkit-device-pixel-ratio: 2)" },
@@ -39,6 +41,7 @@ export const metadata: Metadata = {
     width: "device-width",
     initialScale: 1,
     maximumScale: 1,
+    minimumScale: 1,
     userScalable: false,
     viewportFit: "cover",
   },
@@ -47,6 +50,8 @@ export const metadata: Metadata = {
     "apple-mobile-web-app-capable": "yes",
     "application-name": "Cashira",
     "apple-mobile-web-app-title": "Cashira",
+    "apple-mobile-web-app-status-bar-style": "black-translucent",
+    "format-detection": "telephone=no",
     "msapplication-navbutton-color": "#374151",
     "msapplication-starturl": "/",
     "msapplication-TileColor": "#374151",
@@ -64,6 +69,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <CurrencyProvider>
+              <DisableZoom />
               {children}
             </CurrencyProvider>
           </AuthProvider>
