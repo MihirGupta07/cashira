@@ -3,12 +3,13 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from '@/lib/ThemeContext';
 import { transformApiTransactionsToType } from '@/lib/transaction-utils';
-import { Transaction, ChartTimeframe } from '@/types';
+import { Transaction } from '@/types';
 import { DailyChart } from './DailyChart';
 import { WeeklyChart } from './WeeklyChart';
 import { MonthlyChart } from './MonthlyChart';
 import { Spinner } from '../ui/Spinner';
 import { useTransactions } from '@/lib/TransactionContext';
+import { ChartTimeframe } from '@/lib/constants';
 
 export function ChartSwitcher() {
   const { colors } = useTheme();
