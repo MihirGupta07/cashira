@@ -84,7 +84,7 @@ export const darkSemanticColors = {
     success: `text-${darkColors.green[600]}`,             // Success text (green-400)
     income: `text-${darkColors.green[600]}`,              // Income text (green-400)
     expense: `text-${darkColors.red[600]}`,               // Expense text (red-400)
-    brand: `text-${darkColors.primary[400]}`,             // Yellow brand text (yellow-400)
+    brand: `text-${darkColors.primary[200]}`,             // Yellow brand text (yellow-200)
     brandActive: `text-${darkColors.primary[400]}`,       // Active yellow text (yellow-400)
     placeholder: `placeholder-${darkColors.gray[400]}`,   // Placeholder text
   },
